@@ -3,8 +3,8 @@ const Movies = require('../models/Movies')
 class MoviesController {
   static async getAll (req, res, next) {
     try {
-      const MoviesList = await Movies.getAll()
-      res.status(200).json(MoviesList)
+      const moviesList = await Movies.getAll()
+      res.status(200).json(moviesList)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -13,9 +13,8 @@ class MoviesController {
   static async getById (req, res, next) {
     const id = req.params.id
     try {
-      const Movies = await Movies.getById(id)
-      console.log(Movies);
-      res.status(200).json(Movies)
+      const movies = await Movies.getById(id)
+      res.status(200).json(movies)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -31,8 +30,8 @@ class MoviesController {
       tags: tags.split(',')
     }
     try {
-      const Movies = await Movies.create(payload)
-      res.status(200).json(Movies)
+      const movies = await Movies.create(payload)
+      res.status(200).json(movies)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -49,8 +48,8 @@ class MoviesController {
       tags: tags.split(',')
     }
     try {
-      const Movies = await Movies.editById(id, payload)
-      res.status(200).json(Movies)
+      const movies = await Movies.editById(id, payload)
+      res.status(200).json(movies)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -59,8 +58,8 @@ class MoviesController {
   static async deletebyId (req, res, next) {
     const id = req.params.id
     try {
-      const Movies = await Movies.deletebyId(id)
-      res.status(200).json(Movies)
+      const movies = await Movies.deletebyId(id)
+      res.status(200).json(movies)
     } catch (err) {
       res.status(500).json(err)
     }
