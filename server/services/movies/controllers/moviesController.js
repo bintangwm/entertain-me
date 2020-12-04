@@ -31,7 +31,7 @@ class MoviesController {
     }
     try {
       const movies = await Movies.create(payload)
-      res.status(200).json(movies)
+      res.status(200).json(movies.ops[0])
     } catch (err) {
       res.status(500).json(err)
     }
@@ -49,7 +49,7 @@ class MoviesController {
     }
     try {
       const movies = await Movies.editById(id, payload)
-      res.status(200).json(movies)
+      res.status(200).json(movies.value)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -59,7 +59,7 @@ class MoviesController {
     const id = req.params.id
     try {
       const movies = await Movies.deletebyId(id)
-      res.status(200).json(movies)
+      res.status(200).json(movies.value)
     } catch (err) {
       res.status(500).json(err)
     }

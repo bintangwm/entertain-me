@@ -32,7 +32,7 @@ class SeriesController {
     }
     try {
       const series = await Series.create(payload)
-      res.status(200).json(series)
+      res.status(200).json(series.ops[0])
     } catch (err) {
       res.status(500).json(err)
     }
@@ -50,7 +50,7 @@ class SeriesController {
     }
     try {
       const series = await Series.editById(id, payload)
-      res.status(200).json(series)
+      res.status(200).json(series.value)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -60,7 +60,7 @@ class SeriesController {
     const id = req.params.id
     try {
       const series = await Series.deletebyId(id)
-      res.status(200).json(series)
+      res.status(200).json(series.value)
     } catch (err) {
       res.status(500).json(err)
     }

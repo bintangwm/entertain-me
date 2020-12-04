@@ -14,10 +14,8 @@ class MoviesController {
           url: '/movies',
           method: 'get'
         })
-        await redis.set('dataMovies', JSON.stringify(response.data), "EX", 30)
-        setTimeout(() => {
-          res.status(200).json(response.data)
-        }, 2000);
+        await redis.set('dataMovies', JSON.stringify(response.data))
+        res.status(200).json(response.data)
       }
     } catch (err) {
       res.status(500).json(err)
@@ -28,7 +26,7 @@ class MoviesController {
     const id = req.params.id
     try {
       const dataMovie = await redis.get('dataMovie')
-      if (dataMovie) {
+      if (dataMovie._id === id) {
         // console.log(dataMovies, '<< dataMovie');
         res.status(200).json(JSON.parse(dataMovie))
       } else {
@@ -36,10 +34,8 @@ class MoviesController {
           url: `/movies/${id}`,
           method: 'get'
         })
-        await redis.set('dataMovie', JSON.stringify(response.data), "EX", 30)
-        setTimeout(() => {
-          res.status(200).json(response.data)
-        }, 2000);
+        await redis.set('dataMovie', JSON.stringify(response.data))
+        res.status(200).json(response.data)
       }
     } catch (err) {
       res.status(500).json(err)
@@ -62,7 +58,6 @@ class MoviesController {
         data: payload
       })
       await redis.del('dataMovies')
-      await redis.del('dataMovie')
       res.status(201).json(response.data)
     } catch (err) {
       res.status(500).json(err)
@@ -87,7 +82,7 @@ class MoviesController {
       })
       await redis.del('dataMovies')
       await redis.del('dataMovie')
-      res.status(201).json(response.data)
+      res.status(200).json(response.data)
     } catch (err) {
       res.status(500).json(err)
     }
@@ -102,7 +97,7 @@ class MoviesController {
       })
       await redis.del('dataMovies')
       await redis.del('dataMovie')
-      res.status(201).json(response.data)
+      res.status(200).json(response.data)
     } catch (err) {
       res.status(500).json(err)
     }
