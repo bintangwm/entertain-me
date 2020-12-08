@@ -18,7 +18,7 @@ const typeDefs = gql`
     movie(_id:ID): Movie
   }
 
-  input MovieInput {
+  input movieInput {
     title: String
     overview: String
     poster_path: String
@@ -27,8 +27,8 @@ const typeDefs = gql`
   }
 
   extend type Mutation {
-    addMovie(data: MovieInput): Movie
-    updateMovie(data: MovieInput, id: String): Movie
+    addMovie(data: movieInput): Movie
+    updateMovie(data: movieInput, id: String): Movie
     deleteMovie(id: String): Movie
   }
 `
@@ -56,15 +56,16 @@ const resolvers = {
       const { _id } = args
       try {
         const dataMovie = await redis.get('dataMovie')
-        // console.log(response.data);
-        if (dataMovie._id === _id && dataMovie) {
+        if (dataMovie && dataMovie._id === _id) {
           return JSON.parse(dataMovie)
         } else {
           const response = await axios({
             url: `http://localhost:5001/movies/${_id}`,
             method: 'get'
           })
-          await redis.set('dataMovie', JSON.stringify(response.data))
+          if (response.data) {
+            await redis.set('dataMovie', JSON.stringify(response.data))
+          }
           return response.data
         }
       } catch (err) {
@@ -76,6 +77,7 @@ const resolvers = {
     addMovie: async (_, args) => {
       const { title, overview, poster_path, popularity, tags } = args.data
       const payload = { title, overview, poster_path, popularity, tags }
+      console.log({args, payload});
       try {
         const response = await axios({
           url: 'http://localhost:5001/movies',
@@ -90,6 +92,7 @@ const resolvers = {
     },
     updateMovie: async (_, args) => {
       const { id } = args
+      console.log('change');
       try {
         const response = await axios({
           url: `http://localhost:5001/movies/${id}`,

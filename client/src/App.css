@@ -1,0 +1,44 @@
+.entertain-card {
+  height: auto;
+  width: 15em;
+  /* background-color: aqua; */
+  margin: 1em;
+  position: relative;
+}
+
+.inner {
+  overflow: hidden;
+  height: 22em;
+}
+
+.inner img{
+  transition: all 1.5s ease;
+  height: 100%;
+  width: auto;
+}
+
+.inner:hover img{
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.favorite-logo {
+  position: absolute;
+  top: 0.8em;
+  left: 0.8em;
+  font-size: large;
+}
+
+.favorite-logo:hover {
+  cursor: pointer;
+}
+
+.popularity-badge {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.card-title{
+  text-align: center;
+}
