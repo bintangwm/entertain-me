@@ -1,6 +1,7 @@
 import React from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery, gql, useMutation } from '@apollo/client'
 import { useParams } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const GET_MOVIE = gql`
   query getMovie($id: ID) {
@@ -14,12 +15,47 @@ const GET_MOVIE = gql`
     }   
   }
 `
+const DELETE_MOVIE = gql`
+  mutation DeleteMovie($id: String) {
+    deleteMovie(id: $id) {
+      _id
+      title
+    }
+  }
+`
+const GET_DATA = gql`
+  query getData {
+    movies{
+      _id
+      title
+      overview
+      poster_path
+      popularity
+      tags
+    }
+  }
+`
 
 export default function MovieDetails() {
   const { id } = useParams()
+  const [deleteMovie] = useMutation(DELETE_MOVIE)
+  // const [deleteMovie] = useMutation(DELETE_MOVIE, {
+  //   refetchQueries: [
+  //     { query: GET_DATA }
+  //   ]
+  // })
   const { loading, error, data } = useQuery(GET_MOVIE, {
-    variables: { id: id }
+    variables: { id }
   })
+  const history = useHistory()
+
+  function onClickDeleteMovie() {
+    deleteMovie({
+      variables: { id }
+    })
+    console.log(id);
+    history.push('/')
+  }
 
   if (loading || error) {
     return(
@@ -81,6 +117,10 @@ export default function MovieDetails() {
                   </tr>
                 </tbody>
               </table>
+              <div className="d-flex align-items-right">
+                <button onClick={(e) => onClickDeleteMovie(e, data.movie._id)} type="button" className="btn btn-danger">Delete</button>
+                <button onClick={() => (history.push(`/edit-movie/${data.movie._id}`))} type="button" className="btn btn-info">Edit</button>
+              </div>
             </div>
           </div>
         </div>

@@ -1,17 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import MovieCard from '../components/MovieCard'
-import client, { favoritesVars as favorites } from '../config/graphql' 
-import { GET_FAVORITES } from '../config/queries'
+import { favoritesVars as favorites } from '../config/graphql' 
 
 export default function Favorite() {
-
-  useEffect(() => {
-    const cache = client.readQuery({
-      query: GET_FAVORITES
-    })
-    console.log(cache);
-  }, [])
-
   return(
     <div className="container">
       <h1>Favorite Page</h1>

@@ -14,21 +14,27 @@ const GET_MOVIE = gql`
     }   
   }
 `
-const GET_DATA = gql`
-  query getData {
-    movies{
-      _id
-      title
-      popularity
-      poster_path
-    }
-  }
-`
+// const GET_DATA = gql`
+//   query getData {
+//     movies{
+//       _id
+//       title
+//       popularity
+//       poster_path
+//       tags
+//       overview
+//     }
+//   }
+// `
 const EDIT_MOVIE = gql`
   mutation updateMovie($data: movieInput, $id: String) {
     updateMovie(data: $data, id: $id) {
       _id
       title
+      popularity
+      poster_path
+      tags
+      overview
     }
   }
 `
@@ -43,11 +49,12 @@ export default function EditMovie() {
   const [formInput, setFormInput] = React.useState({
     title: '', overview: '', poster_path: '', popularity: '', tags: ''
   })
-  const [editMovie] = useMutation(EDIT_MOVIE, {
-    refetchQueries: [
-      { query: GET_DATA }
-    ]
-  })
+  // const [editMovie] = useMutation(EDIT_MOVIE, {
+  //   refetchQueries: [
+  //     { query: GET_DATA }
+  //   ]
+  // })
+  const [editMovie] = useMutation(EDIT_MOVIE)
   const history = useHistory()
 
   useEffect(() => {

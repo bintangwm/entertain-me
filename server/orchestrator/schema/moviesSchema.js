@@ -55,10 +55,10 @@ const resolvers = {
     movie: async (parent, args, context, info) => {
       const { _id } = args
       try {
-        const dataMovie = await redis.get('dataMovie')
-        if (dataMovie && dataMovie._id === _id) {
-          return JSON.parse(dataMovie)
-        } else {
+        // const dataMovie = await redis.get('dataMovie')
+        // if (dataMovie && dataMovie._id === _id) {
+        //   return JSON.parse(dataMovie)
+        // } else {
           const response = await axios({
             url: `http://localhost:5001/movies/${_id}`,
             method: 'get'
@@ -67,7 +67,7 @@ const resolvers = {
             await redis.set('dataMovie', JSON.stringify(response.data))
           }
           return response.data
-        }
+        // }
       } catch (err) {
         console.log(err);
       } 

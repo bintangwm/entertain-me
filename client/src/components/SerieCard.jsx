@@ -9,6 +9,13 @@ export default function SerieCard({ data }) {
       </div>
       <div className="card-body">
         <h5 className="card-title">{ data.title }</h5>
+        { 
+          data.tags.map((tag, i) => {
+            return(
+            <span className="badge badge-info" key={i} style={{ marginRight: '2px' }}>{ tag }</span>
+            )
+          })
+        }
       </div>
       <span className="badge badge-secondary popularity-badge">
         <i className="fas fa-star" style={{ color: 'yellow' }}></i>

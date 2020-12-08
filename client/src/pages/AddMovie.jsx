@@ -14,8 +14,10 @@ const GET_DATA = gql`
     movies{
       _id
       title
-      popularity
+      overview
       poster_path
+      popularity
+      tags
     }
   }
 `

@@ -10,12 +10,14 @@ const GET_DATA = gql`
       title
       popularity
       poster_path
+      tags
     }  
     series{
       _id
       title
       popularity
       poster_path
+      tags
     }  
   }
 `
