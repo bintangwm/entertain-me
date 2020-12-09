@@ -1,6 +1,7 @@
 import { gql, useMutation } from '@apollo/client'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import Swal from 'sweetalert2'
 const ADD_MOVIE = gql`
   mutation AddMovie($data: movieInput) {
     addMovie(data: $data) {
@@ -32,6 +33,7 @@ export default  function AddMovie() {
       { query: GET_DATA }
     ]
   })
+  const [errorInput, setErrorInput] = React.useState('')
   const history = useHistory()
 
   function handleFormInput(e) {
@@ -48,18 +50,33 @@ export default  function AddMovie() {
 
   function onSubmit(e) {
     e.preventDefault()
-    console.log(formInput);
+    setErrorInput('')
+    const { title, tags, overview, popularity, poster_path } = formInput
+    if (!title || !tags || !overview || popularity <= 0 ||isNaN(popularity) || !poster_path) {
+      return setErrorInput('Please insert all forms!')
+    }
     addMovie({
       variables: {
         data: formInput
       }
     })
+    Swal.fire(
+      'Add Movie',
+      'Movie added successfully',
+      'success'
+    )
     history.push('/')
   }
   return(
     <div className="container">
       <h1>Add Movie</h1>
       <hr/>
+      {
+        (errorInput) &&
+        <div className="alert alert-danger" role="alert">
+          { errorInput }
+        </div>
+      }
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Title</label>

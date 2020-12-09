@@ -1,6 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 const GET_MOVIE = gql`
   query getMovie($id: ID) {
@@ -56,6 +57,7 @@ export default function EditMovie() {
   // })
   const [editMovie] = useMutation(EDIT_MOVIE)
   const history = useHistory()
+  const [errorInput, setErrorInput] = useState('')
 
   useEffect(() => {
     if (data?.movie) {
@@ -83,12 +85,22 @@ export default function EditMovie() {
 
   function onSubmit(e) {
     e.preventDefault()
+    setErrorInput('')
+    const { title, tags, overview, popularity, poster_path } = formInput
+    if (!title || !tags || !overview || popularity <= 0 ||isNaN(popularity) || !poster_path) {
+      return setErrorInput('Please insert all forms!')
+    }
     editMovie({
       variables: {
         data: formInput,
         id: id
       }
     })
+    Swal.fire(
+      'Update Movie',
+      'Movie updated successfully',
+      'success'
+    )
     history.push('/')
   }
 
@@ -116,6 +128,12 @@ export default function EditMovie() {
     <div className="container">
       <h1>Edit Movie</h1>
       <hr/>
+      {
+        (errorInput) &&
+        <div className="alert alert-danger" role="alert">
+          { errorInput }
+        </div>
+      }
       <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Title</label>

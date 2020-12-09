@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { useHistory } from 'react-router-dom'
 
 const GET_MOVIE = gql`
-  query getMovie($id: ID) {
+  query getMovie($id: ID!) {
     movie(_id: $id){
       _id
       title
@@ -38,12 +38,12 @@ const GET_DATA = gql`
 
 export default function MovieDetails() {
   const { id } = useParams()
-  const [deleteMovie] = useMutation(DELETE_MOVIE)
-  // const [deleteMovie] = useMutation(DELETE_MOVIE, {
-  //   refetchQueries: [
-  //     { query: GET_DATA }
-  //   ]
-  // })
+  // const [deleteMovie] = useMutation(DELETE_MOVIE)
+  const [deleteMovie] = useMutation(DELETE_MOVIE, {
+    refetchQueries: [
+      { query: GET_DATA }
+    ]
+  })
   const { loading, error, data } = useQuery(GET_MOVIE, {
     variables: { id }
   })
@@ -53,31 +53,37 @@ export default function MovieDetails() {
     deleteMovie({
       variables: { id }
     })
-    console.log(id);
     history.push('/')
   }
 
-  if (loading || error) {
+  if (loading || error || !data.movie) {
     return(
       <div className="container">
       <h1>Movie Detail</h1>
       <hr/>
       <div>
-        <p>{JSON.stringify(data)}</p>
+        {
+          (loading) &&
+            <div className="alert alert-info" role="alert">
+              Loading your data...
+            </div>
+        }
         {
           (error)
             ? <div className="alert alert-danger" role="alert">
                 There is something error with query!
+                <p>{JSON.stringify(error)}</p>
               </div>
             : <div className="alert alert-info" role="alert">
-                Loading your data...
+                There is something error with query!
+                <p>{JSON.stringify(data)}</p>
               </div>
         }
       </div>
     </div>
     )
   }
-
+  
   return(
     <div className="movie-detail container">
       <h2>Movie Detail</h2>

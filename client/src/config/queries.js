@@ -8,6 +8,7 @@ export const GET_FAVORITES = gql`
       popularity
       poster_path
       tags
+      overview
     }
   }
 `

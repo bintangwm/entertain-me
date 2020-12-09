@@ -2,6 +2,7 @@ const { gql } = require('apollo-server')
 const axios = require('axios')
 const Redis =  require('ioredis')
 const redis = new Redis()
+const baseUrl = 'http://localhost:5001'
 
 const typeDefs = gql`
   type Movie {
@@ -15,15 +16,15 @@ const typeDefs = gql`
 
   extend type Query {
     movies: [Movie]
-    movie(_id:ID): Movie
+    movie(_id:ID!): Movie
   }
 
   input movieInput {
-    title: String
-    overview: String
-    poster_path: String
-    popularity: Float
-    tags: String
+    title: String!
+    overview: String!
+    poster_path: String!
+    popularity: Float!
+    tags: String!
   }
 
   extend type Mutation {
@@ -55,19 +56,19 @@ const resolvers = {
     movie: async (parent, args, context, info) => {
       const { _id } = args
       try {
-        // const dataMovie = await redis.get('dataMovie')
-        // if (dataMovie && dataMovie._id === _id) {
-        //   return JSON.parse(dataMovie)
-        // } else {
+        const dataMovie = await redis.get('dataMovie')
+        if (dataMovie && dataMovie._id === _id) {
+          return JSON.parse(dataMovie)
+        } else {
           const response = await axios({
-            url: `http://localhost:5001/movies/${_id}`,
+            url: `${baseUrl}/movies/${_id}`,
             method: 'get'
           })
           if (response.data) {
             await redis.set('dataMovie', JSON.stringify(response.data))
           }
           return response.data
-        // }
+        }
       } catch (err) {
         console.log(err);
       } 
@@ -77,10 +78,9 @@ const resolvers = {
     addMovie: async (_, args) => {
       const { title, overview, poster_path, popularity, tags } = args.data
       const payload = { title, overview, poster_path, popularity, tags }
-      console.log({args, payload});
       try {
         const response = await axios({
-          url: 'http://localhost:5001/movies',
+          url: baseUrl + '/movies',
           method: 'post',
           data: payload
         })
@@ -92,10 +92,9 @@ const resolvers = {
     },
     updateMovie: async (_, args) => {
       const { id } = args
-      console.log('change');
       try {
         const response = await axios({
-          url: `http://localhost:5001/movies/${id}`,
+          url: `${baseUrl}/movies/${id}`,
           method: 'put',
           data: args.data
         })
@@ -110,7 +109,7 @@ const resolvers = {
       const { id } = args
       try {
         const response = await axios({
-          url: `http://localhost:5001/movies/${id}`,
+          url: `${baseUrl}/movies/${id}`,
           method: 'delete'
         })
         await redis.del('dataMovies')
